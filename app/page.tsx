@@ -2,6 +2,7 @@ import { HeroSection } from "@/components/landing/HeroSection";
 import { FeaturesSection } from "@/components/landing/FeaturesSection";
 import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
 import { CTASection } from "@/components/landing/CTASection";
+import { ProductivitySection } from "@/components/landing/ProductivitySection";
 import { Navbar } from "@/components/ui/Navbar";
 import { Footer } from "@/components/ui/Footer";
 import { InstallPromptModal } from "@/components/ui/InstallPromptModal";
@@ -13,6 +14,7 @@ export default function HomePage() {
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />
+      <ProductivitySection />
       <CTASection />
       <Footer />
       <InstallPromptModal />

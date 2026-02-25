@@ -1,6 +1,6 @@
 import { DayPilotTask } from "@/lib/store";
 
-export function ScheduleCard({ task }: { task: DayPilotTask }) {
+export function ScheduleCard({ task, onToggle }: { task: DayPilotTask; onToggle?: () => void }) {
   return (
     <article className="rounded-2xl border border-borderSubtle bg-bgCard p-4">
       <div className="flex items-start justify-between gap-4">
@@ -22,6 +22,15 @@ export function ScheduleCard({ task }: { task: DayPilotTask }) {
           {task.status}
         </span>
       </div>
+      {onToggle ? (
+        <button
+          type="button"
+          onClick={onToggle}
+          className="mt-3 inline-flex min-h-11 items-center rounded-full border border-borderSubtle px-4 text-xs text-textSecondary transition hover:border-accentGreen hover:text-accentGreen"
+        >
+          Update Status
+        </button>
+      ) : null}
     </article>
   );
 }

@@ -37,6 +37,8 @@ type DayPilotStore = {
   goals: DayPilotGoal[];
   habits: DayPilotHabit[];
   schedule: DayPilotTask[];
+  quickNotes: string[];
+  focusMinutes: number;
   loading: boolean;
   toasts: Toast[];
   setUser: (data: { userId: string; userName: string }) => void;
@@ -45,6 +47,10 @@ type DayPilotStore = {
   fetchGoals: () => Promise<void>;
   fetchSchedule: () => Promise<void>;
   sendChatMessage: (message: string) => Promise<string>;
+  addTask: (task: { title: string; start: string; end: string }) => void;
+  toggleTaskStatus: (taskId: string) => void;
+  addQuickNote: (note: string) => void;
+  startFocusSprint: (minutes: number) => void;
 };
 
 export const useDayPilotStore = create<DayPilotStore>((set, get) => ({
@@ -57,6 +63,8 @@ export const useDayPilotStore = create<DayPilotStore>((set, get) => ({
     { id: "h-3", name: "Evening Reflection", streak: 9, completedToday: true }
   ],
   schedule: [],
+  quickNotes: [],
+  focusMinutes: 0,
   loading: false,
   toasts: [],
   setUser: ({ userId, userName }) => set({ userId, userName }),
@@ -127,5 +135,39 @@ export const useDayPilotStore = create<DayPilotStore>((set, get) => ({
     } catch {
       return "I could not reach the AI coach right now. Try again in a moment.";
     }
+  },
+  addTask: ({ title, start, end }) => {
+    const { pushToast } = get();
+    set((state) => ({
+      schedule: [
+        {
+          id: `task-${Date.now()}`,
+          title,
+          start,
+          end,
+          status: "todo"
+        },
+        ...state.schedule
+      ]
+    }));
+    pushToast({ title: "Task added", description: `${title} was added to your schedule.` });
+  },
+  toggleTaskStatus: (taskId) => {
+    set((state) => ({
+      schedule: state.schedule.map((task) => {
+        if (task.id !== taskId) return task;
+        if (task.status === "todo") return { ...task, status: "done" };
+        if (task.status === "done") return { ...task, status: "missed" };
+        return { ...task, status: "todo" };
+      })
+    }));
+  },
+  addQuickNote: (note) =>
+    set((state) => ({
+      quickNotes: [note, ...state.quickNotes].slice(0, 6)
+    })),
+  startFocusSprint: (minutes) => {
+    set((state) => ({ focusMinutes: state.focusMinutes + minutes }));
+    get().pushToast({ title: "Focus sprint started", description: `${minutes} minutes on the clock.` });
   }
 }));
