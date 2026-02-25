@@ -9,6 +9,8 @@ import { useDayPilotStore } from "@/lib/store";
 
 export default function DashboardPage() {
   const userName = useDayPilotStore((s) => s.userName);
+  const userEmail = useDayPilotStore((s) => s.userEmail);
+  const userId = useDayPilotStore((s) => s.userId);
   const schedule = useDayPilotStore((s) => s.schedule);
   const goals = useDayPilotStore((s) => s.goals);
   const habits = useDayPilotStore((s) => s.habits);
@@ -16,6 +18,7 @@ export default function DashboardPage() {
   const quickNotes = useDayPilotStore((s) => s.quickNotes);
   const focusMinutes = useDayPilotStore((s) => s.focusMinutes);
   const fetchGoals = useDayPilotStore((s) => s.fetchGoals);
+  const fetchHabits = useDayPilotStore((s) => s.fetchHabits);
   const fetchSchedule = useDayPilotStore((s) => s.fetchSchedule);
   const addTask = useDayPilotStore((s) => s.addTask);
   const toggleTaskStatus = useDayPilotStore((s) => s.toggleTaskStatus);
@@ -28,8 +31,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     void fetchGoals();
+    void fetchHabits();
     void fetchSchedule();
-  }, [fetchGoals, fetchSchedule]);
+  }, [fetchGoals, fetchHabits, fetchSchedule]);
 
   const handleTaskAdd = (e: FormEvent) => {
     e.preventDefault();
@@ -48,9 +52,13 @@ export default function DashboardPage() {
   return (
     <AppShell>
       <div className="space-y-6">
-        <h1 className="font-heading text-3xl font-bold sm:text-4xl">Good morning, {userName}</h1>
-        <div className="grid gap-4 xl:grid-cols-3">
-          <section className="rounded-2xl border border-borderSubtle bg-bgCard p-5 xl:col-span-2">
+        <div>
+          <h1 className="font-heading text-3xl font-bold sm:text-4xl">Good morning, {userName || "there"}</h1>
+          <p className="mt-1 text-sm text-textSecondary">{userEmail ? `${userEmail} ` : ""} {userId ? `| ID: ${userId}` : "| Guest session"}</p>
+        </div>
+
+        <div className="grid items-stretch gap-4 xl:grid-cols-3">
+          <section className="h-full rounded-2xl border border-borderSubtle bg-bgCard p-5 xl:col-span-2">
             <h2 className="text-sm uppercase tracking-[0.18em] text-textSecondary">Add Task</h2>
             <form onSubmit={handleTaskAdd} className="mt-4 grid gap-3 sm:grid-cols-[2fr,1fr,1fr,auto]">
               <input
@@ -80,11 +88,11 @@ export default function DashboardPage() {
             </form>
           </section>
 
-          <section className="rounded-2xl border border-borderSubtle bg-bgCard p-5">
+          <section className="flex h-full flex-col rounded-2xl border border-borderSubtle bg-bgCard p-5">
             <p className="text-sm uppercase tracking-[0.18em] text-textSecondary">Focus Sprint</p>
             <p className="mt-3 font-heading text-4xl text-accentGreen">{focusMinutes}m</p>
             <p className="mt-1 text-sm text-textSecondary">Total focused this session</p>
-            <div className="mt-4 flex gap-2">
+            <div className="mt-auto flex gap-2 pt-4">
               <button
                 type="button"
                 onClick={() => startFocusSprint(25)}
@@ -121,7 +129,7 @@ export default function DashboardPage() {
           </section>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[2fr,1fr]">
+        <div className="grid items-stretch gap-4 lg:grid-cols-[2fr,1fr]">
           <section className="space-y-3">
             <h2 className="text-sm uppercase tracking-[0.18em] text-textSecondary">Habit Streaks</h2>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -130,15 +138,15 @@ export default function DashboardPage() {
               ))}
             </div>
           </section>
-          <section className="rounded-2xl border border-borderSubtle bg-bgCard p-5">
+          <section className="flex h-full flex-col rounded-2xl border border-borderSubtle bg-bgCard p-5">
             <p className="text-sm uppercase tracking-[0.18em] text-textSecondary">Burnout Risk Score</p>
             <p className="mt-6 font-heading text-5xl font-extrabold text-accentGreen">28%</p>
             <p className="mt-2 text-sm text-textSecondary">Stable. Keep one long break in your afternoon block.</p>
           </section>
         </div>
 
-        <div className="grid gap-4 xl:grid-cols-2">
-          <section className="rounded-2xl border border-borderSubtle bg-bgCard p-5">
+        <div className="grid items-stretch gap-4 xl:grid-cols-2">
+          <section className="h-full rounded-2xl border border-borderSubtle bg-bgCard p-5">
             <h2 className="text-sm uppercase tracking-[0.18em] text-textSecondary">Priority Matrix</h2>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <article className="rounded-xl border border-red-500/40 bg-red-500/10 p-3">
@@ -160,7 +168,7 @@ export default function DashboardPage() {
             </div>
           </section>
 
-          <section className="rounded-2xl border border-borderSubtle bg-bgCard p-5">
+          <section className="flex h-full flex-col rounded-2xl border border-borderSubtle bg-bgCard p-5">
             <h2 className="text-sm uppercase tracking-[0.18em] text-textSecondary">Quick Capture</h2>
             <form onSubmit={handleQuickNote} className="mt-4 flex gap-2">
               <input

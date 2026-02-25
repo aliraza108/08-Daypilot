@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
+import { X } from "lucide-react";
 import { useDayPilotStore } from "@/lib/store";
 
 export function ToastViewport() {
@@ -25,8 +26,20 @@ export function ToastViewport() {
             exit={{ opacity: 0, y: 8 }}
             className="pointer-events-auto rounded-xl border border-accentGreen/60 bg-bgCard p-3 shadow-glowGreen"
           >
-            <p className="text-sm font-semibold">{toast.title}</p>
-            {toast.description ? <p className="text-xs text-textSecondary">{toast.description}</p> : null}
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold">{toast.title}</p>
+                {toast.description ? <p className="text-xs text-textSecondary">{toast.description}</p> : null}
+              </div>
+              <button
+                type="button"
+                onClick={() => dismissToast(toast.id)}
+                className="inline-flex min-h-8 min-w-8 items-center justify-center rounded-full text-textSecondary transition hover:bg-white/5 hover:text-white"
+                aria-label="Dismiss notification"
+              >
+                <X size={14} />
+              </button>
+            </div>
           </motion.div>
         ))}
       </AnimatePresence>

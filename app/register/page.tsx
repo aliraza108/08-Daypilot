@@ -31,13 +31,19 @@ export default function RegisterPage() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      const res = await api.post("/users/register", values);
-      const userId = res.data?.user?.id ?? "demo-user";
-      setUser({ userId, userName: values.name });
+      const res = await api.post("/api/users/register", {
+        name: values.name,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"
+      });
+      const user = res.data?.user ?? res.data ?? {};
+      const userId = user.id ?? user.user_id ?? user._id ?? "demo-user";
+      const userName = user.name ?? values.name;
+      const userEmail = user.email ?? values.email;
+      setUser({ userId, userName, userEmail });
       pushToast({ title: "Welcome to DayPilot", description: "Your account is ready." });
       router.push("/dashboard");
     } catch {
-      setUser({ userId: "demo-user", userName: values.name });
+      setUser({ userId: "demo-user", userName: values.name, userEmail: values.email });
       pushToast({ title: "API unavailable", description: "Continuing in demo mode." });
       router.push("/dashboard");
     }

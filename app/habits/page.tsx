@@ -1,11 +1,17 @@
 "use client";
 
+import { useEffect } from "react";
 import { AppShell } from "@/components/dashboard/AppShell";
 import { HabitCard } from "@/components/dashboard/HabitCard";
 import { useDayPilotStore } from "@/lib/store";
 
 export default function HabitsPage() {
   const habits = useDayPilotStore((s) => s.habits);
+  const fetchHabits = useDayPilotStore((s) => s.fetchHabits);
+
+  useEffect(() => {
+    void fetchHabits();
+  }, [fetchHabits]);
 
   return (
     <AppShell>
